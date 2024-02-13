@@ -1,5 +1,6 @@
 import cv2 as cv
 import numpy as np
+import math
 def processImage(image):
     gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
     gray_scale = cv.GaussianBlur(gray, (15, 15), 0)
@@ -8,7 +9,7 @@ def processImage(image):
     roi = np.zeros(image.shape[:2], dtype="uint8")
     cv.rectangle(roi, (500, 500), (850, 850), 1, -1)
     mask = cv.bitwise_and(canny_image, canny_image, mask=roi)
-    cv.rectangle(image, (500, 500), (850, 850), (0, 255, 0), 5)
+    cv.rectangle(image, (500, 500), (850, 850), (255, 0, 255), 5)
     lines = cv.HoughLinesP(mask, 1, np.pi / 180, threshold=10, minLineLength=10, maxLineGap=15)
     if lines is not None:
         slope_arr = []
@@ -25,5 +26,13 @@ def processImage(image):
             for j in range(len(slope_arr)):
                 x1, y1, x2, y2 = lines_list[i]
                 x3, y3, x4, y4 = lines_list[j]
-                cv.line(image, ((x1 + x3) // 2, (y1 + y3) // 2), ((x2 + x4) // 2, (y2 + y4) // 2), (255, 0, 255), 10)
+                # calculate the distane between the two parallel lines
+                # calculate the slope of one line
+                slope1 = (y2 - y1) / (x2 - x1 + 0.00001)
+                slope2 = (y4 - y3) / (x4 - x3 + 0.00001)
+                slope = 0.5 * (slope1 + slope2)
+                dist = abs(y1 - y3 - slope * (x1 - x3)) / math.sqrt(slope * slope + 1)
+                if dist > 170:
+                    # Calculates and displays the centerline
+                    cv.line(image, ((x1 + x3) // 2, (y1 + y3) // 2), ((x2 + x4) // 2, (y2 + y4) // 2), (0, 0, 255), 10)
 
