@@ -9,9 +9,3 @@ This project is a Python-based application for detecting and displaying lines in
 - **Centerline Calculation:** Calculates the centerline between parallel lines, displaying it on the screen if the distance between them is significant.
 - **Region of Interest (ROI):** Limits detection to a rectangular region, optimizing processing and focusing on a specific area.
 
-## Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/line-detection
-   cd line-detection
